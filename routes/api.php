@@ -22,5 +22,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/users', UserController::class);
     Route::apiResource('/products', ProductController::class);
 
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
+
     Route::get('/categories', [CategoryController::class, 'index']);
 });
