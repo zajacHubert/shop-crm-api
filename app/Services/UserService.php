@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserStoreRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
@@ -29,7 +32,7 @@ class UserService implements UserServiceInterface
         $this->userRepository = $userRepository;
     }
 
-    public function store(Request $request): Response
+    public function store(UserStoreRequest $request): Response
     {
         $user = $this->userModel::create([
             'id' => Str::uuid()->toString(),
@@ -43,7 +46,7 @@ class UserService implements UserServiceInterface
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
-    public function register(Request $request): Response
+    public function register(UserRegisterRequest $request): Response
     {
         $user = $this->userModel::create([
             'id' => Str::uuid()->toString(),
@@ -57,7 +60,7 @@ class UserService implements UserServiceInterface
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
-    public function login(Request $request): Response
+    public function login(UserLoginRequest $request): Response
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response([
