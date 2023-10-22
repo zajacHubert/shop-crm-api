@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
+use Stripe\Exception\CardException;
 
 class OrderService implements OrderServiceInterface
 {
@@ -83,5 +86,40 @@ class OrderService implements OrderServiceInterface
         return response([
             'isSuccess' => boolval($success),
         ]);
+    }
+
+    public function processPayment(Request $request): Response
+    {
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+
+            $products = $request->input('products', []);
+
+            $paymentIntent = PaymentIntent::create([
+                'amount' => $this->calculateOrderAmount($products) * 100,
+                'currency' => 'eur',
+                'payment_method_types' => ['card', 'p24'],
+            ]);
+            return response()->json(['clientSecret' => $paymentIntent->client_secret]);
+        } catch (CardException $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    private function calculateOrderAmount(array $products): float
+    {
+        $totalAmount = 0;
+
+        foreach ($products as $product) {
+            $found = $this->productRepository->show($product['id']);
+            if (!$found) {
+                throw new \Exception("Product not found.");
+            }
+            $totalAmount += $found->price * $product['quantity'];
+        }
+
+        return $totalAmount;
     }
 }

@@ -41,4 +41,9 @@ class OrderController extends Controller
     {
         return $this->orderService->destroy($id);
     }
+
+    public function processPayment(Request $request): Response
+    {
+        return $this->orderService->processPayment($request);
+    }
 }

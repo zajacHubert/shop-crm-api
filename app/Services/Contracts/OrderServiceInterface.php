@@ -11,4 +11,5 @@ interface OrderServiceInterface
 {
     public function store(Request $request): Response;
     public function destroy(string $id): Response;
+    public function processPayment(Request $request): Response;
 }
