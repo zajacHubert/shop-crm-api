@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Services\Contracts\ProductServiceInterface;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 
@@ -25,7 +26,7 @@ class ProductService implements ProductServiceInterface
         $this->productRepository = $productRepository;
     }
 
-    public function store(Request $request): Response
+    public function store(ProductStoreRequest $request): Response
     {
         $id = Str::uuid()->toString();
         $file = $request->file('image');
@@ -45,7 +46,7 @@ class ProductService implements ProductServiceInterface
         return response(new ProductResource($product), Response::HTTP_CREATED);
     }
 
-    public function update(string $id, Request $request): Response
+    public function update(string $id, ProductUpdateRequest $request): Response
     {
         $product = $this->productRepository->show($id);
         $product->update($request->only('title', 'description', 'image', 'price', 'category_id'));

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Resources\ProductResource;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Services\Contracts\ProductServiceInterface;
@@ -32,12 +34,12 @@ class ProductController extends Controller
         return $this->productRepository->show($id);
     }
 
-    public function store(Request $request): Response
+    public function store(ProductStoreRequest $request): Response
     {
         return $this->productService->store($request);
     }
 
-    public function update(string $id, Request $request): Response
+    public function update(string $id, ProductUpdateRequest $request): Response
     {
         return $this->productService->update($id, $request);
     }
