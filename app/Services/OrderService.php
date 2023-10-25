@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Http\Requests\OrderStoreRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -37,7 +38,7 @@ class OrderService implements OrderServiceInterface
         $this->orderRepository = $orderRepository;
     }
 
-    public function store(Request $request): Response
+    public function store(OrderStoreRequest $request): Response
     {
         $order = new $this->orderModel();
         $order->id = Str::uuid()->toString();

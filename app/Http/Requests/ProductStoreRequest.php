@@ -19,7 +19,7 @@ class ProductStoreRequest extends FormRequest
             'title' => 'string|required|min:4|max:50',
             'description' => 'string|required|min:4|max:200',
             'price' => 'required|numeric|between:0.01,99999.99',
-            'image' => 'required|image|mimes:jpeg,png',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp',
             'category_id' => 'required|uuid|exists:categories,id',
         ];
     }

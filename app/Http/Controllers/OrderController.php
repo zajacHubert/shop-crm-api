@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderStoreRequest;
 use App\Http\Resources\OrderResource;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Services\Contracts\OrderServiceInterface;
@@ -32,7 +33,7 @@ class OrderController extends Controller
         return $this->orderRepository->show($id);
     }
 
-    public function store(Request $request): Response
+    public function store(OrderStoreRequest $request): Response
     {
         return $this->orderService->store($request);
     }

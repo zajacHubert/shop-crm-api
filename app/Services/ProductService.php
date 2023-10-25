@@ -10,6 +10,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Services\Contracts\ProductServiceInterface;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 
@@ -49,7 +50,24 @@ class ProductService implements ProductServiceInterface
     public function update(string $id, ProductUpdateRequest $request): Response
     {
         $product = $this->productRepository->show($id);
-        $product->update($request->only('title', 'description', 'image', 'price', 'category_id'));
+        if ($request->hasFile('image')) {
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $newFileName = $id . '.' . $extension;
+            $path = $file->storeAs('images', $newFileName, 'public');
+            $product['image'] = $path;
+        }
+        $product->update([
+            'title' => $request->input('title'),
+            'price' => $request->input('price'),
+            'description' => $request->input('description'),
+            'category_id' => $request->input('category_id'),
+        ]);
+        $product->save();
+
 
         return response(new ProductResource($product), Response::HTTP_ACCEPTED);
     }
