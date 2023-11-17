@@ -68,7 +68,6 @@ class ProductService implements ProductServiceInterface
         ]);
         $product->save();
 
-
         return response(new ProductResource($product), Response::HTTP_ACCEPTED);
     }
 
