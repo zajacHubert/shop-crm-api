@@ -23,9 +23,9 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-    public function index(): ResourceCollection
+    public function index(Request $request): ResourceCollection
     {
-        return $this->orderRepository->index();
+        return $this->orderRepository->index($request);
     }
 
     public function show(string $id): OrderResource
