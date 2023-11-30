@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderStoreRequest;
+use App\Http\Requests\OrderUpdateRequest;
 use App\Http\Resources\OrderResource;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Services\Contracts\OrderServiceInterface;
@@ -36,6 +37,11 @@ class OrderController extends Controller
     public function store(OrderStoreRequest $request): Response
     {
         return $this->orderService->store($request);
+    }
+
+    public function update(string $id, OrderUpdateRequest $request): Response
+    {
+        return $this->orderService->update($id, $request);
     }
 
     public function destroy(string $id): Response

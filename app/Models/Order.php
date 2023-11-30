@@ -17,7 +17,6 @@ class Order extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

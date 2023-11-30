@@ -49,19 +49,19 @@ class OrderRepository implements OrderRepositoryInterface
                     $query->orderBy($sortParam, $direction);
                     break;
             }
+        }
 
-            if ($request->has('search')) {
-                $searchTerm = $request->input('search');
-                $query->where(function ($query) use ($searchTerm) {
-                    $query->where('value', 'like', "%$searchTerm%");
-                    $query->orWhereHas('user', function ($query) use ($searchTerm) {
-                        $query->whereRaw('LOWER(first_name) like ?', ["%" . strtolower($searchTerm) . "%"])
-                            ->orWhereRaw('LOWER(last_name) like ?', ["%" . strtolower($searchTerm) . "%"])
-                            ->orWhereRaw('LOWER(email) like ?', ["%" . strtolower($searchTerm) . "%"]);
-                    });
-                    $query->orWhereRaw('LOWER(created_at) like ?', ["%" . strtolower($searchTerm) . "%"]);
+        if ($request->has('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('value', 'like', "%$searchTerm%");
+                $query->orWhereHas('user', function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(first_name) like ?', ["%" . strtolower($searchTerm) . "%"])
+                        ->orWhereRaw('LOWER(last_name) like ?', ["%" . strtolower($searchTerm) . "%"])
+                        ->orWhereRaw('LOWER(email) like ?', ["%" . strtolower($searchTerm) . "%"]);
                 });
-            }
+                $query->orWhereRaw('LOWER(created_at) like ?', ["%" . strtolower($searchTerm) . "%"]);
+            });
         }
 
         $orders = $query->paginate(10);

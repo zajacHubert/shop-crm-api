@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Http\Requests\OrderStoreRequest;
+use App\Http\Requests\OrderUpdateRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -78,6 +79,59 @@ class OrderService implements OrderServiceInterface
             DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function update(string $id, OrderUpdateRequest $request): Response
+    {
+        $orderToEdit = $this->orderRepository->show($id);
+
+        if ($request->has('user_id') || $request->has('created_at')) {
+            $orderToEdit->update([
+                'user_id' => $request->input('user_id') ?? $orderToEdit->user_id,
+                'created_at' => $request->input('created_at') ?? $orderToEdit->created_at,
+            ]);
+            $orderToEdit->save();
+        }
+
+
+        if ($request->has('products')) {
+            try {
+                $products = $request->input('products', []);
+                $totalAmount = 0;
+
+                $orderToEdit->orderItems()->delete();
+
+                foreach ($products as $product) {
+                    $found = $this->productRepository->show($product['id']);
+                    if (!$found) {
+                        throw new \Exception("Product not found.");
+                    }
+
+                    $orderItem = new $this->orderItem();
+                    $orderItem->id = Str::uuid()->toString();
+                    $orderItem->order_id = $orderToEdit->id;
+                    $orderItem->product_id = $found->id;
+                    $orderItem->quantity = $product['quantity'];
+                    $orderItem->price = $found->price;
+                    $orderItem->save();
+
+                    $totalAmount += $found->price * $product['quantity'];
+                }
+                /** @var Order $orderToEdit */
+                $orderToEdit->value = $totalAmount;
+                $orderToEdit->save();
+
+                DB::commit();
+
+                $orderToEdit->load('user', 'orderItems.product');
+
+                return response(new OrderResource($orderToEdit), Response::HTTP_OK);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        }
+        return response(new OrderResource($orderToEdit), Response::HTTP_OK);
     }
 
     public function destroy(string $id): Response
