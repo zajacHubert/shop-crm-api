@@ -26,9 +26,9 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function index(): ResourceCollection
+    public function index(Request $request): ResourceCollection
     {
-        return $this->userRepository->index();
+        return $this->userRepository->index($request);
     }
 
     public function show(string $id): ?UserResource
