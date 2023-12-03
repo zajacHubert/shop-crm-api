@@ -98,7 +98,8 @@ class UserService implements UserServiceInterface
     public function update(string $id, Request $request): Response
     {
         $user = $this->userRepository->show($id);
-        $user->update($request->only('first_name', 'last_name', 'email', 'role'));
+        $user->update($request->only('first_name', 'last_name', 'email'));
+        $user->syncRoles([$request->input('role')]);
 
         return response(new UserResource($user), Response::HTTP_ACCEPTED);
     }
