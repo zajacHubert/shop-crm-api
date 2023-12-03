@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/orders/{id}', [OrderController::class, 'update']);
 
     Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/roles', [RoleController::class, 'index']);
 });

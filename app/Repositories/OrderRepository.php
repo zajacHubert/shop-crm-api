@@ -22,7 +22,7 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function index(Request $request): ResourceCollection
     {
-        $query = $this->orderModel::with(['user', 'orderItems.product']);
+        $query = $this->orderModel::with(['user', 'orderItems.product.category']);
 
         if ($request->has('sortParam')) {
             $sortParam = $request->input('sortParam');
@@ -70,6 +70,6 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function show(string $id): OrderResource
     {
-        return new OrderResource($this->orderModel::with(['user.roles', 'orderItems.product'])->find($id));
+        return new OrderResource($this->orderModel::with(['user.roles', 'orderItems.product.category'])->find($id));
     }
 }
