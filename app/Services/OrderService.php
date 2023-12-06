@@ -93,7 +93,6 @@ class OrderService implements OrderServiceInterface
             $orderToEdit->save();
         }
 
-
         if ($request->has('products')) {
             try {
                 $products = $request->input('products', []);
@@ -119,7 +118,7 @@ class OrderService implements OrderServiceInterface
                 }
                 /** @var Order $orderToEdit */
                 $orderToEdit->value = $totalAmount;
-                $orderToEdit->save();
+                $orderToEdit->update(['value' => $orderToEdit->value]);
 
                 DB::commit();
 

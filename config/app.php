@@ -173,6 +173,7 @@ return [
         App\Providers\ProductServiceProvider::class,
         App\Providers\OrderServiceProvider::class,
         App\Providers\RoleServiceProvider::class,
+        App\Providers\StatisticServiceProvider::class,
     ])->toArray(),
 
     /*
