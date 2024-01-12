@@ -24,11 +24,14 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/categories', [CategoryController::class, 'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
 
     Route::apiResource('/users', UserController::class);
-    Route::apiResource('/products', ProductController::class);
+    Route::apiResource('/products', ProductController::class)->except(['index']);
 
     Route::post('/orders/process', [OrderController::class, 'processPayment']);
     Route::get('/orders', [OrderController::class, 'index']);
@@ -37,7 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
     Route::put('/orders/{id}', [OrderController::class, 'update']);
 
-    Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/roles', [RoleController::class, 'index']);
     Route::get('/sales', [StatisticController::class, 'getMonthlySales']);
 });

@@ -33,11 +33,20 @@ class ProductRepository implements ProductRepositoryInterface
         if ($request->has('sortParam')) {
             $sortParam = $request->input('sortParam');
             $direction = $request->input('sortDirection', 'asc');
-
             $query->orderBy($sortParam, $direction);
         }
 
-        $products = $query->paginate(9);
+        if ($request->has('search') && $request->input('search')) {
+            $searchTerm = $request->input('search');
+            $query->where('title', 'like', '%' . strtolower($searchTerm) . '%');
+        }
+
+        if (!$request->has('search')) {
+            $products = $query->paginate(9);
+        } else {
+            $products = $query->get();
+        }
+
         return ProductResource::collection($products);
     }
 
