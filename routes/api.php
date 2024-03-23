@@ -26,12 +26,12 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::apiResource('/products', ProductController::class)->except(['index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
 
     Route::apiResource('/users', UserController::class);
-    Route::apiResource('/products', ProductController::class)->except(['index']);
 
     Route::post('/orders/process', [OrderController::class, 'processPayment']);
     Route::get('/orders', [OrderController::class, 'index']);
